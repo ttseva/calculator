@@ -1,7 +1,0 @@
-.footer__task {
-    display: none;
-}
-
-.block-task:hover .footer__task{
-    display: block;
-}

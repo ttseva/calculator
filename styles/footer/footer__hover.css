@@ -1,5 +1,5 @@
 .footer__hover {
-    color: #b6b6b6;
+    color: rgba(182, 182, 182, 1);
 }
 
 .block-task:hover .footer__hover {
@@ -8,4 +8,5 @@
 
 .block-name:hover .footer__hover {
     display: none;
+    animation: fadeOut 2s;
 }

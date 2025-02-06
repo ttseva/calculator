@@ -1,11 +1,30 @@
 @import url('footer__block.css');
 @import url('./blocks/name.css');
 @import url('./blocks/task.css');
-@import url('footer__task.css');
+@import url('footer__text.css');
 @import url('footer__hover.css');
-@import url('footer__name.css');
 
-.footer{
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.footer {
     height: 100vh;
     width: 100vw;
     position: absolute;

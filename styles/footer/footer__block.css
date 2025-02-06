@@ -1,16 +1,17 @@
 .footer__block {
-    background-color: #b6b6b64a;
+    font-size: 20px;
+    width: 100px;
     height: inherit;
     padding: 0 20px;
+    position: absolute;
+    text-align: center;
     display: flex;
     align-items: center;
     justify-content: center;
-    text-align: center;
-    position: absolute;
-    width: 100px;
+    background-color: rgba(182, 182, 182, 0.29);
     transition: background-color 1s;
 }
 
 .footer__block:hover {
-    background-color: rgba(84, 84, 84, 0.29);
+    background-color: rgba(179, 95, 5, 0.644);
 }
