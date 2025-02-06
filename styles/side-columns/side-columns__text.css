@@ -1,13 +1,13 @@
-.footer__text {
+.side-columns__text {
     display: none;
 }
 
-.block-task:hover .footer__text {
+.block-task:hover .side-columns__text {
     display: block;
     animation: fadeIn 2s;
 }
 
-.block-name:hover .footer__text {
+.block-name:hover .side-columns__text {
     display: block;
     animation: fadeIn 2s;
 }

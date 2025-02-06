@@ -1,12 +1,12 @@
-.footer__hover {
+.side-columns__hover {
     color: rgba(182, 182, 182, 1);
 }
 
-.block-task:hover .footer__hover {
+.block-task:hover .side-columns__hover {
     display: none;
 }
 
-.block-name:hover .footer__hover {
+.block-name:hover .side-columns__hover {
     display: none;
     animation: fadeOut 2s;
 }

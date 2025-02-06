@@ -1,7 +1,13 @@
 @import url('header__title.css');
 
-.header{
-    margin: 0 auto;
-    margin-bottom: 50px;
+.header {
+    margin: 40px auto;
     text-align: center;
+}
+
+@media screen and (max-width: 480px) {
+    .header {
+        margin-top: 95px;
+        margin-bottom: 20px;
+    }
 }

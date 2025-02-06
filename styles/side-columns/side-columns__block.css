@@ -1,4 +1,4 @@
-.footer__block {
+.side-columns__block {
     font-size: 20px;
     width: 100px;
     height: inherit;
@@ -12,6 +12,14 @@
     transition: background-color 1s;
 }
 
-.footer__block:hover {
+.side-columns__block:hover, .info-slide:active {
     background-color: rgba(218, 116, 6, 0.644);
+}
+
+@media screen and (max-width: 480px) {
+    .side-columns__block {
+        width: inherit;
+        height: 70px;
+        padding: 0;
+    }
 }
