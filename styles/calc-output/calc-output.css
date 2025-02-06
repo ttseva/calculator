@@ -8,13 +8,13 @@
     margin-bottom: 50px;
     padding: 10px 15px;
     box-sizing: border-box;
-    text-align: left;
+    text-align: right;
     direction: rtl;
     background-color: rgba(217, 217, 217, 1);
     border: 3px solid rgb(161, 161, 161);
     border-radius: 7px;
     box-shadow: 6px 4px 0px 0px rgb(101, 101, 101) inset;
     overflow: hidden;
-    
+    white-space: nowrap;
 }
 
