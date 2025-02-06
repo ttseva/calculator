@@ -1,0 +1,18 @@
+.calc-input__element {
+    font-family: inherit;
+    font-size: inherit;
+    background-color: #D9D9D9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 45px;
+    border: none;
+    border-radius: 5px;
+    box-shadow: -4px -4px 0px 0px rgba(141, 141, 141, 0.299) inset;
+    z-index: 1;
+}
+
+.calc-input__element:active{
+    box-shadow: 4px 4px 0px 0px rgba(138, 138, 138, 0.8) inset, -1px -1px 0px 0px rgba(138, 138, 138, 0.8) inset;
+    
+}

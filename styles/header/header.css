@@ -1,0 +1,8 @@
+@import url('header__title.css');
+@import url('header__subtitle.css');
+
+.header{
+    margin: 0 auto;
+    margin-bottom: 50px;
+    text-align: center;
+}

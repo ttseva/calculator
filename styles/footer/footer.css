@@ -1,0 +1,13 @@
+@import url('footer__block.css');
+@import url('./blocks/name.css');
+@import url('./blocks/task.css');
+@import url('footer__task.css');
+@import url('footer__hover.css');
+@import url('footer__name.css');
+
+.footer{
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    top: 0;
+}

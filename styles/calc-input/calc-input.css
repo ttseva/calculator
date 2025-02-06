@@ -1,0 +1,10 @@
+@import url('calc-input__main-grid.css');
+@import url('calc-input__operators-grid.css');
+@import url('calc-input__element.css');
+@import url('elements/clear.css');
+@import url('elements/plus.css');
+
+.calc-input{
+    display: flex;
+    justify-content: space-between;
+}

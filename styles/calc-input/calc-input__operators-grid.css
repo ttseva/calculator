@@ -1,0 +1,9 @@
+.calc-input__operators-grid{
+    display: flex;
+    flex-direction: column;
+    width: 75px;
+    gap: 17px;
+    flex: 0 0 75px;
+    align-items: stretch;
+    font-size: 32px;
+}

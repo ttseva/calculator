@@ -1,0 +1,7 @@
+.footer__name{
+    display: none;
+}
+
+.block-name:hover .footer__name {
+    display: block;
+}

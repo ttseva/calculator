@@ -1,0 +1,11 @@
+.footer__hover {
+    color: #b6b6b6;
+}
+
+.block-task:hover .footer__hover {
+    display: none;
+}
+
+.block-name:hover .footer__hover {
+    display: none;
+}

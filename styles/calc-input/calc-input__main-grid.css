@@ -1,0 +1,7 @@
+.calc-input__main-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 75px);
+    grid-template-rows: repeat(5, 45px);
+    grid-column-gap: 16px;
+    grid-row-gap: 17px;
+}
