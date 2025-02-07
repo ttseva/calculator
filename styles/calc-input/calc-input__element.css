@@ -18,3 +18,7 @@
     background-color: rgb(201, 201, 201);
     box-shadow: 4px 4px 0px 0px rgba(138, 138, 138, 0.8) inset, -1px -1px 0px 0px rgba(138, 138, 138, 0.8) inset;
 }
+
+.calc-input__element.element-plus {
+    font-size: 40px;
+}
