@@ -1,5 +1,20 @@
-function turnToRPN(expression) {}
-function calculateResult(expression) {}
+const precedence = {
+  "^": 3,
+  "×": 2,
+  "÷": 2,
+  "-": 1,
+  "+": 1,
+};
+
+const operators = {
+  "^": (a, b) => Math.pow(a, b),
+  "×": (a, b) => a * b,
+  "÷": (a, b) => a / b,
+  "-": (a, b) => a - b,
+  "+": (a, b) => a + b,
+};
+
+
 
 const calculatorBody = document.querySelector(".calc");
 const inputButton = document.querySelectorAll(".calc-input__element");
@@ -33,16 +48,17 @@ calculatorBody.addEventListener("click", (evt) => {
 
   function clearLastEntry() {
     if (screenText === "0") return;
-
     screenText = screenText.slice(0, -1);
     if (!screenText) screenText = "0";
+
     outputScreen.textContent = screenText;
   }
 
   function displayResult() {
-    outputScreenHistory.innerHTML = /\d$/.test(screenText)
-      ? screenText
-      : screenText.slice(0, -1);
+    if (screenText === "0") return;
+    if (!/\d$/.test(screenText)) screenText = screenText.slice(0, -1);
+
+    outputScreenHistory.innerHTML = screenText + "=";
     outputScreen.textContent = calculateResult(screenText);
   }
 
@@ -67,8 +83,54 @@ calculatorBody.addEventListener("click", (evt) => {
 
     outputScreen.textContent = screenText ? screenText : "&nbsp;";
   }
-
-  function isOperator(char) {
-    return /[+\-×÷^]/.test(char);
-  }
 });
+
+
+function calculateResult(expression) {
+  let outputStack = [];
+  let firstNumber;
+  let secondNumber;
+
+  for (const char of turnToPostfixNotation(expression)) {
+    if (!isOperator(char)) {
+      outputStack.push(parseFloat(char));
+    } else {
+      secondNumber = outputStack.pop();
+      firstNumber = outputStack.pop();
+      outputStack.push(operators[char](firstNumber, secondNumber));
+      console.log(char);                              //DON't FORGET TO DELETE
+    }
+  }
+  return outputStack.pop();
+}
+
+function turnToPostfixNotation(expression) {
+  let operatorsStack = [];
+  let outputQueue = [];
+
+  for (const char of expression) {
+    if (!isOperator(char)) {
+      outputQueue.push(char);
+    } else {
+      while (
+        operatorsStack.length > 0 &&
+        getPrecedence(operatorsStack[operatorsStack.length - 1]) >=
+          getPrecedence(char)
+      ) {
+        outputQueue.push(operatorsStack.pop());
+      }
+      operatorsStack.push(char);
+    }
+  }
+
+  while (operatorsStack.length > 0) outputQueue.push(operatorsStack.pop());
+  return outputQueue.join("");
+}
+
+function isOperator(char) {
+  return /[+\-×÷^]/.test(char);
+}
+
+function getPrecedence(operator) {
+  return precedence[operator] || 0;
+}
