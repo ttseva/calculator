@@ -14,8 +14,6 @@ const operators = {
   "+": (a, b) => a + b,
 };
 
-
-
 const calculatorBody = document.querySelector(".calc");
 const inputButton = document.querySelectorAll(".calc-input__element");
 const outputScreen = document.querySelector(".calc-output__input");
@@ -56,8 +54,14 @@ calculatorBody.addEventListener("click", (evt) => {
 
   function displayResult() {
     if (screenText === "0") return;
+    if (screenText.match(/^[0-9]+$/)) {
+      outputScreenHistory.innerHTML = screenText + "=";
+      outputScreen.textContent = screenText;
+      return;
+    }
     if (!/\d$/.test(screenText)) screenText = screenText.slice(0, -1);
 
+    console.log(screenText);
     outputScreenHistory.innerHTML = screenText + "=";
     outputScreen.textContent = calculateResult(screenText);
   }
@@ -68,7 +72,7 @@ calculatorBody.addEventListener("click", (evt) => {
     const lastChar = screenText.slice(-1);
 
     if (char === "0" || char === "00") {
-      if (isOperator(lastChar)) return;
+      if (lastChar === "0") return;
     }
 
     if (isOperator(char) && isOperator(lastChar)) {
@@ -85,7 +89,6 @@ calculatorBody.addEventListener("click", (evt) => {
   }
 });
 
-
 function calculateResult(expression) {
   let outputStack = [];
   let firstNumber;
@@ -97,8 +100,10 @@ function calculateResult(expression) {
     } else {
       secondNumber = outputStack.pop();
       firstNumber = outputStack.pop();
+      console.log(firstNumber, secondNumber);
+      if (secondNumber == "0" && char === "÷") return "ERROR";
       outputStack.push(operators[char](firstNumber, secondNumber));
-      console.log(char);                              //DON't FORGET TO DELETE
+      console.log(char); //DON't FORGET TO DELETE
     }
   }
   return outputStack.pop();
@@ -107,11 +112,16 @@ function calculateResult(expression) {
 function turnToPostfixNotation(expression) {
   let operatorsStack = [];
   let outputQueue = [];
+  let numTemp = "";
 
   for (const char of expression) {
     if (!isOperator(char)) {
-      outputQueue.push(char);
+      numTemp += char;
     } else {
+      if (numTemp) {
+        outputQueue.push(numTemp);
+        numTemp = "";
+      }
       while (
         operatorsStack.length > 0 &&
         getPrecedence(operatorsStack[operatorsStack.length - 1]) >=
@@ -122,9 +132,9 @@ function turnToPostfixNotation(expression) {
       operatorsStack.push(char);
     }
   }
-
+  if (numTemp) outputQueue.push(numTemp);
   while (operatorsStack.length > 0) outputQueue.push(operatorsStack.pop());
-  return outputQueue.join("");
+  return outputQueue;
 }
 
 function isOperator(char) {
