@@ -1,3 +1,6 @@
+function turnToRPN(expression) {}
+function calculateResult(expression) {}
+
 const calculatorBody = document.querySelector(".calc");
 const inputButton = document.querySelectorAll(".calc-input__element");
 const outputScreen = document.querySelector(".calc-output__input");
@@ -12,10 +15,11 @@ calculatorBody.addEventListener("click", (evt) => {
 
   switch (buttonText) {
     case "AC":
-      clearScreen(true);
+      outputScreen.textContent = "0";
+      outputScreenHistory.innerHTML = "&nbsp;";
       break;
-    case "C":
-      clearScreen(false);
+    case "CE":
+      clearLastEntry();
       break;
     case "=":
       displayResult();
@@ -27,39 +31,42 @@ calculatorBody.addEventListener("click", (evt) => {
       appendToOutput(buttonText);
   }
 
-  function clearScreen(clearAll) {
-    outputScreen.textContent = "0";
-    if (clearAll) outputScreenHistory.innerHTML = "&nbsp;";
+  function clearLastEntry() {
+    if (screenText === "0") return;
+
+    screenText = screenText.slice(0, -1);
+    if (!screenText) screenText = "0";
+    outputScreen.textContent = screenText;
   }
 
   function displayResult() {
     outputScreenHistory.innerHTML = /\d$/.test(screenText)
       ? screenText
       : screenText.slice(0, -1);
-    outputScreen.textContent = "0";
+    outputScreen.textContent = calculateResult(screenText);
   }
 
-function appendToOutput(char) {
-  if (!screenText && isOperator(char)) return; 
-  
-  const lastChar = screenText.slice(-1);
+  function appendToOutput(char) {
+    if (!screenText && isOperator(char)) return;
 
-  if (char === "0" || char === "00"){
-    if (isOperator(lastChar)) return;
+    const lastChar = screenText.slice(-1);
+
+    if (char === "0" || char === "00") {
+      if (isOperator(lastChar)) return;
+    }
+
+    if (isOperator(char) && isOperator(lastChar)) {
+      screenText = screenText.slice(0, -1) + char;
+    } else if (char === "00" && (!screenText || screenText === "0")) {
+      screenText = "0";
+    } else if (screenText === "0" && !isOperator(char)) {
+      screenText = char;
+    } else {
+      screenText += char;
+    }
+
+    outputScreen.textContent = screenText ? screenText : "&nbsp;";
   }
-
-  if (isOperator(char) && isOperator(lastChar)) {
-    screenText = screenText.slice(0, -1) + char; 
-  } else if (char === "00" && (!screenText || screenText === "0")) {
-    screenText = "0"; 
-  } else if (screenText === "0" && !isOperator(char)) {
-    screenText = char; 
-  } else {
-    screenText += char;
-  }
-
-  outputScreen.textContent = screenText ? screenText : "&nbsp;";
-}
 
   function isOperator(char) {
     return /[+\-×÷^]/.test(char);
