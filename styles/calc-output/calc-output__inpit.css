@@ -1,4 +1,6 @@
 .calc-output__input {
     font-size: 46px;
+    display: block;
+    float: right;
 }
 

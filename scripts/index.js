@@ -36,13 +36,19 @@ calculatorBody.addEventListener("click", (evt) => {
     outputScreenHistory.innerHTML = /\d$/.test(screenText)
       ? screenText
       : screenText.slice(0, -1);
-    outputScreen.textContent = "";
+    outputScreen.textContent = "0";
   }
 
 function appendToOutput(char) {
   if (!screenText && isOperator(char)) return; 
+  
+  const lastChar = screenText.slice(-1);
 
-  if (isOperator(char) && isOperator(screenText.slice(-1))) {
+  if (char === "0" || char === "00"){
+    if (isOperator(lastChar)) return;
+  }
+
+  if (isOperator(char) && isOperator(lastChar)) {
     screenText = screenText.slice(0, -1) + char; 
   } else if (char === "00" && (!screenText || screenText === "0")) {
     screenText = "0"; 
