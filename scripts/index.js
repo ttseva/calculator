@@ -63,7 +63,8 @@ calculatorBody.addEventListener("click", (evt) => {
 
     console.log(screenText);
     outputScreenHistory.innerHTML = screenText + "=";
-    outputScreen.textContent = calculateResult(screenText);
+    outputScreen.textContent =
+      Math.round(calculateResult(screenText) * 100) / 100;
   }
 
   function appendToOutput(char) {
