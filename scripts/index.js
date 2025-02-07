@@ -46,7 +46,8 @@ calculatorBody.addEventListener("click", (evt) => {
 
   function clearLastEntry() {
     if (screenText === "0") return;
-    screenText = screenText.slice(0, -1);
+    if (screenText.slice(-2, -1) === ".") screenText = screenText.slice(0, -2);
+    else screenText = screenText.slice(0, -1);
     if (!screenText) screenText = "0";
 
     outputScreen.textContent = screenText;
