@@ -45,61 +45,75 @@ calculatorBody.addEventListener("click", (evt) => {
   }
 
   function clearLastEntry() {
+    //по умолчанию на экране 0, он не стирается
     if (screenText === "0") return;
-    if (/[\-\.]/.test(screenText.slice(-2, -1)))
-      screenText = screenText.slice(0, -2);
-    else screenText = screenText.slice(0, -1);
-    if (!screenText) screenText = "0";
+
+    //предотвращение случая, когда в конце строки останется точка или запятая
+    screenText = /[\-\.]/.test(screenText.slice(-2, -1))
+      ? screenText.slice(0, -2)
+      : screenText.slice(0, -1);
+
+    if (screenText.length === 0) {
+      screenText = "0";
+    }
 
     outputScreen.textContent = screenText;
+    localStorage.setItem("outputText", screenText);
   }
 
   function displayResult() {
+    //предотвращение попадания изначального 0 или текстовой ошибки в историю
     if (screenText === "0" || screenText.match(/[a-zA-Z]+/)) return;
-    if (screenText.match(/^[0-9]+$/)) {
-      outputScreenHistory.innerHTML = screenText + "=";
-      outputScreen.textContent = screenText;
+
+    //если в вырвжении одно число - перенести его целиком
+    if (/^[0-9]&/.test(screenText)) {
+      updateHistory(screenText, screenText);
       return;
     }
+
+    //обеспечение того, что конец выражения будет цифрой, а не открытым оператором
     if (!/\d$/.test(screenText)) screenText = screenText.slice(0, -1);
 
     console.log(screenText); //DON't FORGET TO DELETE
-    outputScreenHistory.innerHTML = screenText + "=";
-    outputScreen.textContent =
-      Math.round(calculateResult(screenText) * 100000) / 100000;
+    updateHistory(
+      screenText,
+      Math.round(calculateResult(screenText) * 100000) / 100000
+    );
+  }
+
+  function updateHistory(expression, textToAdd) {
+    const historyText = `${expression}=`;
+    outputScreenHistory.innerHTML = historyText;
+    outputScreen.textContent = textToAdd;
+
+    // загрузка в память
+    localStorage.setItem("historyText", historyText);
+    localStorage.setItem("outputText", textToAdd);
   }
 
   function appendToOutput(char) {
     if (!screenText && isOperator(char)) return;
 
-    const firstChar = screenText.slice(0, 1);
     const lastChar = screenText.slice(-1);
     const secondLastChar = screenText.slice(-2, -1);
 
     // предотвращение добавления нескольких нулей после оператора
-    if (
-      lastChar === "0" &&
-      screenText.length > 0 &&
-      isOperator(secondLastChar) &&
-      !isOperator(char)
-    ) {
-      if (char !== "0") {
-        screenText = screenText.slice(0, -1);
-      }
-      else return;
-    }
-
-    // сокращение 00 до 0 в случае добавления после оператора
-    if (isOperator(lastChar) && char === "00") {
-      char = "0";
-    }
-
-    // обеспечение того, что в конце будет один оператор
-    if (isOperator(char) && isOperator(lastChar)) {
+    if (lastChar === "0" && isOperator(secondLastChar) && !isOperator(char)) {
+      if (char === "0" || char === "00") return;
       screenText = screenText.slice(0, -1) + char;
     }
 
-    if (firstChar === "-") {
+    // сокращение 00 до 0 в случае добавления 00 после оператора
+    else if (
+      (isOperator(lastChar) || screenText.match(/[a-zA-Z]+/)) &&
+      char === "00"
+    )
+      screenText += "0";
+    // обеспечение того, что в конце будет только один оператор
+    else if (isOperator(char) && isOperator(lastChar))
+      screenText = screenText.slice(0, -1) + char;
+    // предотвращение возможности использования отрицательного числа в дальнейших выражениях
+    else if (screenText.startsWith("-")) {
       alertbox.render({
         alertIcon: "warning",
         title: "Drawback here!",
@@ -111,26 +125,29 @@ calculatorBody.addEventListener("click", (evt) => {
       screenText = "sorry";
     }
 
-    // предотвращение добавления нулей при пустой строке, установка в ноль при получении значени INFINITY/NAN
+    // предотвращение добавления нулей при пустой строке, установка в ноль при получении текстовых значений
     else if (char === "00" && screenText === "0") {
       screenText = "0";
     }
 
-    // замена 0 на первую введенную цифру
-    else if (screenText === "0" || screenText.match(/[a-zA-Z]+/)) {
-      if (isOperator(char)) {
-        return;
-      }
+    // обработка первого нуля и текстовых ошибок
+    else if (screenText === "0" || /[a-zA-Z]/.test(screenText)) {
+      if (isOperator(char)) return;
       screenText = char;
       outputScreenHistory.innerHTML = "&nbsp;";
-    } else {
+    }
+
+    // все остальные случаи
+    else {
       screenText += char;
     }
 
     outputScreen.textContent = screenText || "&nbsp;";
+    localStorage.setItem("outputText", screenText);
   }
 });
 
+// вычисление постфиксной нотации
 function calculateResult(expression) {
   let outputStack = [];
   let firstNumber;
@@ -138,8 +155,10 @@ function calculateResult(expression) {
 
   for (const char of turnToPostfixNotation(expression)) {
     if (!isOperator(char)) {
+      // если символ - не оператор: добавить в стек
       outputStack.push(parseFloat(char));
     } else {
+      // иначе достать последние два числа из стека и совершить над ними операцию
       secondNumber = outputStack.pop();
       firstNumber = outputStack.pop();
       if (secondNumber == "0" && char === "÷") return "ERROR";
@@ -149,20 +168,23 @@ function calculateResult(expression) {
   return outputStack.pop();
 }
 
+// составление постфиксной нотации для выражения
 function turnToPostfixNotation(expression) {
   let operatorsStack = [];
   let outputQueue = [];
-  let numTemp = "";
+  let numTemp = ""; //для обработки двух и более -значных чисел
 
   for (const char of expression) {
     if (!isOperator(char)) {
       numTemp += char;
     } else {
       if (numTemp) {
+        //помещение числа целиком в очередь
         outputQueue.push(numTemp);
         numTemp = "";
       }
       while (
+        //операторы помещаются в очередь в соответствии с приоритетом
         operatorsStack.length > 0 &&
         getPrecedence(operatorsStack[operatorsStack.length - 1]) >=
           getPrecedence(char)
@@ -184,3 +206,12 @@ function isOperator(char) {
 function getPrecedence(operator) {
   return precedence[operator] || 0;
 }
+
+// загрузка из памяти
+function loadHistory() {
+  outputScreenHistory.innerHTML =
+    localStorage.getItem("historyText") || "&nbsp;";
+  outputScreen.textContent = localStorage.getItem("outputText") || "0";
+}
+
+loadHistory();
