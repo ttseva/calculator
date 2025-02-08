@@ -30,6 +30,8 @@ calculatorBody.addEventListener("click", (evt) => {
     case "AC":
       outputScreen.textContent = "0";
       outputScreenHistory.innerHTML = "&nbsp;";
+      localStorage.setItem("historyText", "&nbsp;");
+      localStorage.setItem("outputText", "0");
       break;
     case "CE":
       clearLastEntry();
