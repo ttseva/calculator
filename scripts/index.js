@@ -55,7 +55,7 @@ calculatorBody.addEventListener("click", (evt) => {
   }
 
   function displayResult() {
-    if (screenText === "0") return;
+    if (screenText === "0" || screenText.match(/[a-zA-Z]+/)) return;
     if (screenText.match(/^[0-9]+$/)) {
       outputScreenHistory.innerHTML = screenText + "=";
       outputScreen.textContent = screenText;
@@ -66,12 +66,13 @@ calculatorBody.addEventListener("click", (evt) => {
     console.log(screenText); //DON't FORGET TO DELETE
     outputScreenHistory.innerHTML = screenText + "=";
     outputScreen.textContent =
-      Math.round((calculateResult(screenText)) * 100000) / 100000;
+      Math.round(calculateResult(screenText) * 100000) / 100000;
   }
 
   function appendToOutput(char) {
     if (!screenText && isOperator(char)) return;
 
+    const firstChar = screenText.slice(0, 1);
     const lastChar = screenText.slice(-1);
     const secondLastChar = screenText.slice(-2, -1);
 
@@ -82,7 +83,10 @@ calculatorBody.addEventListener("click", (evt) => {
       isOperator(secondLastChar) &&
       !isOperator(char)
     ) {
-      return;
+      if (char !== "0") {
+        screenText = screenText.slice(0, -1);
+      }
+      else return;
     }
 
     // сокращение 00 до 0 в случае добавления после оператора
@@ -95,17 +99,30 @@ calculatorBody.addEventListener("click", (evt) => {
       screenText = screenText.slice(0, -1) + char;
     }
 
+    if (firstChar === "-") {
+      alertbox.render({
+        alertIcon: "warning",
+        title: "Drawback here!",
+        message: "Negative numbers support will be added later",
+        btnTitle: "Ok...",
+        themeColor: "#E69229",
+        border: false,
+      });
+      screenText = "sorry";
+    }
+
     // предотвращение добавления нулей при пустой строке, установка в ноль при получении значени INFINITY/NAN
-    else if (
-      (char === "00" && screenText === "0") ||
-      screenText.match(/[a-zA-Z]+/)
-    ) {
+    else if (char === "00" && screenText === "0") {
       screenText = "0";
     }
 
     // замена 0 на первую введенную цифру
-    else if (screenText === "0" && !isOperator(char)) {
+    else if (screenText === "0" || screenText.match(/[a-zA-Z]+/)) {
+      if (isOperator(char)) {
+        return;
+      }
       screenText = char;
+      outputScreenHistory.innerHTML = "&nbsp;";
     } else {
       screenText += char;
     }
